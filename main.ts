@@ -352,7 +352,7 @@ function SpawnMuzzleFlash (spawnerSprite: Sprite) {
     sprites.destroy(muzzleFlashSrpite)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.HealthItem, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.rings, 200)
+    sprites.destroy(otherSprite)
     if (info.life() < 3) {
         info.changeLifeBy(1)
         music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
@@ -382,14 +382,14 @@ function SpawnAsteroids () {
     asteroidSprite.setKind(SpriteKind.Enemy)
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
-    sprites.destroy(sprite, effects.fire, 100)
+    sprites.destroy(sprite)
     sprites.destroy(otherSprite)
     info.changeScoreBy(1)
     music.play(music.melodyPlayable(music.zapped), music.PlaybackMode.InBackground)
     SpawnMuzzleFlash(sprite)
     UpdateDifficulty()
     if (Math.percentChance(5)) {
-        if (currentPlayerLevel < 5) {
+        if (currentPlayerLevel < 3) {
             SpawnUpgradeItem(sprite)
         }
     } else if (Math.percentChance(30)) {
@@ -430,7 +430,7 @@ info.onCountdownEnd(function () {
         ........fff2c...........
         `, warningIcon, 100, 0)
     spaceShipObtacle.setKind(SpriteKind.Enemy)
-    sprites.destroy(warningIcon, effects.warmRadial, 100)
+    sprites.destroy(warningIcon)
 })
 function TakeDamageAnimation () {
     animation.runImageAnimation(
@@ -477,22 +477,9 @@ function TakeDamageAnimation () {
     animation.stopAnimation(animation.AnimationTypes.All, playerSprite)
     playerSprite.setImage(assets.image`PlayerSpaceShip`)
 }
-/**
- * Fire Rate Upgrade
- * 
- * Level 1 = 500
- * 
- * Level 2 = 400
- * 
- * Level 3 = 300
- * 
- * Level 4 = 200
- * 
- * Level 5 = 100 (Max)
- */
 sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.rings, 200)
-    if (currentPlayerLevel < 5) {
+    sprites.destroy(otherSprite)
+    if (currentPlayerLevel < 3) {
         currentPlayerLevel += 1
         fireRate += -100
         levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
@@ -521,12 +508,11 @@ controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `, playerSprite, 0, -90)
-    bulletSprite.startEffect(effects.trail)
     music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.InBackground)
     pause(fireRate)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.CoinItem, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.rings, 200)
+    sprites.destroy(otherSprite)
     info.changeScoreBy(10)
     music.play(music.melodyPlayable(music.baDing), music.PlaybackMode.InBackground)
 })
@@ -620,7 +606,7 @@ function SpawnObstacle () {
     info.startCountdown(1)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.fire, 100)
+    sprites.destroy(otherSprite)
     scene.cameraShake(3, 100)
     info.changeLifeBy(-1)
     music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
@@ -766,7 +752,7 @@ scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff22222232222222222222
     `)
 asteroidSpeed = 10
-bossHP = 100
+bossHP = 50
 PlayerInit()
 LevelStatusInit()
 music.play(music.stringPlayable("C5 B A G F E D C ", 248), music.PlaybackMode.LoopingInBackground)
