@@ -33,6 +33,11 @@ function SpawnAsteroids () {
     asteroidSprite.follow(playerSprite, asteroidSpeed * currentDifficultyLevel)
     asteroidSprite.setKind(SpriteKind.Enemy)
 }
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
+    sprites.destroy(sprite, effects.fire, 100)
+    sprites.destroy(otherSprite)
+    info.changeScoreBy(1)
+})
 function PlayerInit () {
     playerSprite = sprites.create(img`
         . . . . . . . . . . . . . . . . 
