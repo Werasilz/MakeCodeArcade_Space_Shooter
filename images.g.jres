@@ -4,6 +4,11 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "PlayerSpaceShip"
     },
+    "image2": {
+        "data": "hwQUABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDMzAwAAAAAAAAAwMxMRAwAAAAAAAAAzExERAwAAAAAAADMzERERAwAAAAAwMzMRERERAwAAAAAwERERERERAwAAAAAwPT////0TwwAAAAAwPT////0TwwAAAAAwPT////0TwwAAAAAwERERERERAwAAAAAwMzMRERERAwAAAAAAADMzExERAwAAAAAAAAAzExERAwAAAAAAAAAwMxMRAwAAAAAAAAAAMDMzAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "Warning Icon"
+    },
     "*": {
         "mimeType": "image/x-mkcd-f4",
         "dataEncoding": "base64",
