@@ -95,6 +95,11 @@ function LevelStatusInit () {
     levelStatusText.x = 25
     levelStatusText.y = 130
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+    scene.cameraShake(3, 100)
+    sprites.destroy(otherSprite, effects.fire, 100)
+})
 let bulletSprite: Sprite = null
 let levelStatusText: Sprite = null
 let currentPlayerLevel = 0
