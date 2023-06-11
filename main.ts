@@ -1,6 +1,8 @@
 namespace SpriteKind {
     export const TextUI = SpriteKind.create()
     export const Item = SpriteKind.create()
+    export const UpgradeItem = SpriteKind.create()
+    export const HealthItem = SpriteKind.create()
 }
 /**
  * Fire Rate Upgrade
@@ -35,7 +37,7 @@ function SpawnHealthItem (spawnerSprite: Sprite) {
         ....................
         `, 0, 25)
     healthItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
-    healthItemSprite.setKind(SpriteKind.Item)
+    healthItemSprite.setKind(SpriteKind.HealthItem)
 }
 function UpdateDifficulty () {
     if (info.score() % 10 == 0) {
@@ -64,7 +66,7 @@ function SpawnUpgradeItem (spawnerSprite: Sprite) {
         . . . . . . . . . . . . . . . . 
         `, 0, 25)
     upgradeItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
-    upgradeItemSprite.setKind(SpriteKind.Item)
+    upgradeItemSprite.setKind(SpriteKind.UpgradeItem)
 }
 function SpawnAsteroids () {
     asteroidSprite = sprites.createProjectileFromSide(img`
@@ -158,6 +160,14 @@ function TakeDamageAnimation () {
     animation.stopAnimation(animation.AnimationTypes.All, playerSprite)
     playerSprite.setImage(assets.image`PlayerSpaceShip`)
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, otherSprite) {
+    if (currentPlayerLevel < 3) {
+        currentPlayerLevel += 1
+        levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
+    }
+    sprites.destroy(otherSprite, effects.rings, 100)
+    console.logValue("Fire Rate", fireRateUpgradeList[currentPlayerLevel - 1])
+})
 function LevelStatusInit () {
     levelStatusText = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -196,8 +206,9 @@ let upgradeItemSprite: Sprite = null
 let currentDifficultyLevel = 0
 let healthItemSprite: Sprite = null
 let asteroidSpeed = 0
+let fireRateUpgradeList: number[] = []
 effects.starField.startScreenEffect()
-let fireRateUpgradeList = [500, 300, 100]
+fireRateUpgradeList = [500, 300, 100]
 asteroidSpeed = 10
 PlayerInit()
 LevelStatusInit()
