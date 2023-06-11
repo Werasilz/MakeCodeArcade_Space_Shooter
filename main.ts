@@ -68,6 +68,12 @@ function SpawnUpgradeItem (spawnerSprite: Sprite) {
     upgradeItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
     upgradeItemSprite.setKind(SpriteKind.UpgradeItem)
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.HealthItem, function (sprite, otherSprite) {
+    if (info.life() < 3) {
+        info.changeLifeBy(1)
+    }
+    sprites.destroy(otherSprite, effects.rings, 200)
+})
 function SpawnAsteroids () {
     asteroidSprite = sprites.createProjectileFromSide(img`
         . . . . . c c b b b . . . . . . 
@@ -165,7 +171,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, o
         currentPlayerLevel += 1
         levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
     }
-    sprites.destroy(otherSprite, effects.rings, 100)
+    sprites.destroy(otherSprite, effects.rings, 200)
     console.logValue("Fire Rate", fireRateUpgradeList[currentPlayerLevel - 1])
 })
 function LevelStatusInit () {
