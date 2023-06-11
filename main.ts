@@ -82,6 +82,7 @@ function LevelStatusInit () {
     levelStatusText.x = 25
     levelStatusText.y = 130
 }
+let bulletSprite: Sprite = null
 let levelStatusText: Sprite = null
 let currentPlayerLevel = 0
 let currentDifficultyLevel = 0
@@ -95,4 +96,25 @@ PlayerInit()
 LevelStatusInit()
 game.onUpdateInterval(randint(1000, 1500), function () {
     SpawnAsteroids()
+})
+game.onUpdateInterval(fireRateUpgradeList[currentPlayerLevel - 1], function () {
+    bulletSprite = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . 2 2 2 2 . . . . . . 
+        . . . . . 2 3 1 1 3 2 . . . . . 
+        . . . . . 3 1 1 1 1 3 . . . . . 
+        . . . . . 3 1 1 1 1 3 . . . . . 
+        . . . . . 3 1 1 1 1 3 . . . . . 
+        . . . . . 2 1 1 1 1 3 . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . 2 3 1 1 3 2 . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . . 2 1 1 2 . . . . . . 
+        . . . . . . 2 1 1 2 . . . . . . 
+        . . . . . . 2 1 1 2 . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, playerSprite, 0, -90)
+    bulletSprite.startEffect(effects.trail)
 })
