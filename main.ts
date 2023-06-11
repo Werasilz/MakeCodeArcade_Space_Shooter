@@ -7,19 +7,6 @@ namespace SpriteKind {
     export const Effect = SpriteKind.create()
     export const Icon = SpriteKind.create()
 }
-/**
- * Fire Rate Upgrade
- * 
- * Level 1 = 500
- * 
- * Level 2 = 400
- * 
- * Level 3 = 300
- * 
- * Level 4 = 200
- * 
- * Level 5 = 100 (Max)
- */
 function SpawnHealthItem (spawnerSprite: Sprite) {
     healthItemSprite = sprites.createProjectileFromSide(img`
         ....................
@@ -252,6 +239,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.HealthItem, function (sprite, ot
     sprites.destroy(otherSprite, effects.rings, 200)
     if (info.life() < 3) {
         info.changeLifeBy(1)
+        music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
     }
 })
 function SpawnAsteroids () {
@@ -303,6 +291,7 @@ function PlayerInit () {
     info.setLife(3)
     currentPlayerLevel = 1
     currentDifficultyLevel = 1
+    fireRate = 500
 }
 info.onCountdownEnd(function () {
     spaceShipObtacle = sprites.createProjectileFromSprite(img`
@@ -371,12 +360,26 @@ function TakeDamageAnimation () {
     animation.stopAnimation(animation.AnimationTypes.All, playerSprite)
     playerSprite.setImage(assets.image`PlayerSpaceShip`)
 }
+/**
+ * Fire Rate Upgrade
+ * 
+ * Level 1 = 500
+ * 
+ * Level 2 = 400
+ * 
+ * Level 3 = 300
+ * 
+ * Level 4 = 200
+ * 
+ * Level 5 = 100 (Max)
+ */
 sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.rings, 200)
-    console.logValue("Fire Rate", fireRateUpgradeList[currentPlayerLevel - 1])
     if (currentPlayerLevel < 5) {
         currentPlayerLevel += 1
+        fireRate += -100
         levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
+        music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
@@ -399,11 +402,13 @@ controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
         . . . . . . . . . . . . . . . . 
         `, playerSprite, 0, -90)
     bulletSprite.startEffect(effects.trail)
-    pause(fireRateUpgradeList[currentPlayerLevel - 1])
+    music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.InBackground)
+    pause(fireRate)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.CoinItem, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.rings, 200)
     info.changeScoreBy(10)
+    music.play(music.melodyPlayable(music.baDing), music.PlaybackMode.InBackground)
 })
 function LevelStatusInit () {
     levelStatusText = sprites.create(img`
@@ -477,12 +482,14 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     sprites.destroy(otherSprite, effects.fire, 100)
     scene.cameraShake(3, 100)
     info.changeLifeBy(-1)
+    music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
     TakeDamageAnimation()
 })
 let bulletSprite: Sprite = null
 let levelStatusText: Sprite = null
 let warningIcon: Sprite = null
 let spaceShipObtacle: Sprite = null
+let fireRate = 0
 let currentPlayerLevel = 0
 let playerSprite: Sprite = null
 let asteroidSprite: Sprite = null
@@ -492,7 +499,6 @@ let coinItemSprite: Sprite = null
 let currentDifficultyLevel = 0
 let healthItemSprite: Sprite = null
 let asteroidSpeed = 0
-let fireRateUpgradeList: number[] = []
 scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -615,16 +621,11 @@ scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff22224323244242222222
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff22222232222222222222
     `)
-fireRateUpgradeList = [
-500,
-400,
-300,
-200,
-100
-]
 asteroidSpeed = 10
 PlayerInit()
 LevelStatusInit()
+music.play(music.stringPlayable("C5 B A G F E D C ", 248), music.PlaybackMode.LoopingInBackground)
+music.setVolume(50)
 game.onUpdateInterval(randint(1000, 1500), function () {
     SpawnAsteroids()
 })
