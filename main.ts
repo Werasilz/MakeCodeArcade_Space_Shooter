@@ -3,6 +3,7 @@ namespace SpriteKind {
     export const Item = SpriteKind.create()
     export const UpgradeItem = SpriteKind.create()
     export const HealthItem = SpriteKind.create()
+    export const CoinItem = SpriteKind.create()
 }
 /**
  * Fire Rate Upgrade
@@ -45,6 +46,81 @@ function UpdateDifficulty () {
         console.logValue("Difficulty", currentDifficultyLevel)
         console.logValue("Asteroid Speed", asteroidSpeed * currentDifficultyLevel)
     }
+}
+function SpawnCoinItem (spawnerSprite: Sprite) {
+    coinItemSprite = sprites.createProjectileFromSide(img`
+        . . b b b b . . 
+        . b 5 5 5 5 b . 
+        b 5 d 3 3 d 5 b 
+        b 5 3 5 5 1 5 b 
+        c 5 3 5 5 1 d c 
+        c d d 1 1 d d c 
+        . f d d d d f . 
+        . . f f f f . . 
+        `, 0, 25)
+    coinItemSprite.setScale(2, ScaleAnchor.Middle)
+    coinItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
+    coinItemSprite.setKind(SpriteKind.CoinItem)
+    animation.runImageAnimation(
+    coinItemSprite,
+    [img`
+        . . b b b b . . 
+        . b 5 5 5 5 b . 
+        b 5 d 3 3 d 5 b 
+        b 5 3 5 5 1 5 b 
+        c 5 3 5 5 1 d c 
+        c d d 1 1 d d c 
+        . f d d d d f . 
+        . . f f f f . . 
+        `,img`
+        . . b b b . . . 
+        . b 5 5 5 b . . 
+        b 5 d 3 d 5 b . 
+        b 5 3 5 1 5 b . 
+        c 5 3 5 1 d c . 
+        c 5 d 1 d d c . 
+        . f d d d f . . 
+        . . f f f . . . 
+        `,img`
+        . . . b b . . . 
+        . . b 5 5 b . . 
+        . b 5 d 1 5 b . 
+        . b 5 3 1 5 b . 
+        . c 5 3 1 d c . 
+        . c 5 1 d d c . 
+        . . f d d f . . 
+        . . . f f . . . 
+        `,img`
+        . . . b b . . . 
+        . . b 5 5 b . . 
+        . . b 1 1 b . . 
+        . . b 5 5 b . . 
+        . . b d d b . . 
+        . . c d d c . . 
+        . . c 3 3 c . . 
+        . . . f f . . . 
+        `,img`
+        . . . b b . . . 
+        . . b 5 5 b . . 
+        . b 5 1 d 5 b . 
+        . b 5 1 3 5 b . 
+        . c d 1 3 5 c . 
+        . c d d 1 5 c . 
+        . . f d d f . . 
+        . . . f f . . . 
+        `,img`
+        . . . b b b . . 
+        . . b 5 5 5 b . 
+        . b 5 d 3 d 5 b 
+        . b 5 1 5 3 5 b 
+        . c d 1 5 3 5 c 
+        . c d d 1 d 5 c 
+        . . f d d d f . 
+        . . . f f f . . 
+        `],
+    100,
+    true
+    )
 }
 function SpawnUpgradeItem (spawnerSprite: Sprite) {
     upgradeItemSprite = sprites.createProjectileFromSide(img`
@@ -106,6 +182,8 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, oth
         if (info.life() < 3) {
             SpawnHealthItem(sprite)
         }
+    } else if (Math.percentChance(40)) {
+        SpawnCoinItem(sprite)
     }
     UpdateDifficulty()
     sprites.destroy(sprite, effects.fire, 100)
@@ -174,6 +252,32 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, o
     sprites.destroy(otherSprite, effects.rings, 200)
     console.logValue("Fire Rate", fireRateUpgradeList[currentPlayerLevel - 1])
 })
+controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
+    bulletSprite = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . 2 2 2 2 . . . . . . 
+        . . . . . 2 3 1 1 3 2 . . . . . 
+        . . . . . 3 1 1 1 1 3 . . . . . 
+        . . . . . 3 1 1 1 1 3 . . . . . 
+        . . . . . 3 1 1 1 1 3 . . . . . 
+        . . . . . 2 1 1 1 1 3 . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . 2 3 1 1 3 2 . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . . 2 1 1 2 . . . . . . 
+        . . . . . . 2 1 1 2 . . . . . . 
+        . . . . . . 2 1 1 2 . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, playerSprite, 0, -90)
+    bulletSprite.startEffect(effects.trail)
+    pause(fireRateUpgradeList[currentPlayerLevel - 1])
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.CoinItem, function (sprite, otherSprite) {
+    info.changeScoreBy(10)
+    sprites.destroy(otherSprite, effects.rings, 200)
+})
 function LevelStatusInit () {
     levelStatusText = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -209,6 +313,7 @@ let currentPlayerLevel = 0
 let playerSprite: Sprite = null
 let asteroidSprite: Sprite = null
 let upgradeItemSprite: Sprite = null
+let coinItemSprite: Sprite = null
 let currentDifficultyLevel = 0
 let healthItemSprite: Sprite = null
 let asteroidSpeed = 0
@@ -220,25 +325,4 @@ PlayerInit()
 LevelStatusInit()
 game.onUpdateInterval(randint(1000, 1500), function () {
     SpawnAsteroids()
-})
-game.onUpdateInterval(fireRateUpgradeList[currentPlayerLevel - 1], function () {
-    bulletSprite = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . 2 2 2 2 . . . . . . 
-        . . . . . 2 3 1 1 3 2 . . . . . 
-        . . . . . 3 1 1 1 1 3 . . . . . 
-        . . . . . 3 1 1 1 1 3 . . . . . 
-        . . . . . 3 1 1 1 1 3 . . . . . 
-        . . . . . 2 1 1 1 1 3 . . . . . 
-        . . . . . 2 1 1 1 1 2 . . . . . 
-        . . . . . 2 3 1 1 3 2 . . . . . 
-        . . . . . . 3 1 1 3 . . . . . . 
-        . . . . . . 2 1 1 2 . . . . . . 
-        . . . . . . 2 1 1 2 . . . . . . 
-        . . . . . . 2 1 1 2 . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, playerSprite, 0, -90)
-    bulletSprite.startEffect(effects.trail)
 })
