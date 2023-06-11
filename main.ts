@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const TextUI = SpriteKind.create()
+}
 /**
  * Fire Rate Upgrade
  * 
@@ -33,9 +36,34 @@ function PlayerInit () {
     currentPlayerLevel = 1
     currentDifficultyLevel = 1
 }
+function LevelStatusInit () {
+    levelStatusText = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.TextUI)
+    levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
+    levelStatusText.x = 25
+    levelStatusText.y = 130
+}
+let levelStatusText: Sprite = null
 let currentDifficultyLevel = 0
 let currentPlayerLevel = 0
 let playerSprite: Sprite = null
 effects.starField.startScreenEffect()
 let fireRateUpgradeList = [500, 300, 100]
 PlayerInit()
+LevelStatusInit()
