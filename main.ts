@@ -389,7 +389,7 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, oth
     SpawnMuzzleFlash(sprite)
     UpdateDifficulty()
     if (Math.percentChance(5)) {
-        if (currentPlayerLevel < 3) {
+        if (currentPlayerLevel < 5) {
             SpawnUpgradeItem(sprite)
         }
     } else if (Math.percentChance(30)) {
@@ -428,7 +428,7 @@ info.onCountdownEnd(function () {
         ...c2222cfffccf.........
         ...ffffffff2cf..........
         ........fff2c...........
-        `, warningIcon, 100, 0)
+        `, warningIcon, 150, 0)
     spaceShipObtacle.setKind(SpriteKind.Enemy)
     sprites.destroy(warningIcon)
 })
@@ -479,7 +479,7 @@ function TakeDamageAnimation () {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
-    if (currentPlayerLevel < 3) {
+    if (currentPlayerLevel < 5) {
         currentPlayerLevel += 1
         fireRate += -100
         levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
@@ -488,28 +488,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, o
 })
 info.onScore(150, function () {
     SpawnBoss()
-})
-controller.A.onEvent(ControllerButtonEvent.Repeated, function () {
-    bulletSprite = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . 2 2 2 2 . . . . . . 
-        . . . . . 2 3 1 1 3 2 . . . . . 
-        . . . . . 3 1 1 1 1 3 . . . . . 
-        . . . . . 3 1 1 1 1 3 . . . . . 
-        . . . . . 3 1 1 1 1 3 . . . . . 
-        . . . . . 2 1 1 1 1 3 . . . . . 
-        . . . . . 2 1 1 1 1 2 . . . . . 
-        . . . . . 2 3 1 1 3 2 . . . . . 
-        . . . . . . 3 1 1 3 . . . . . . 
-        . . . . . . 2 1 1 2 . . . . . . 
-        . . . . . . 2 1 1 2 . . . . . . 
-        . . . . . . 2 1 1 2 . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, playerSprite, 0, -90)
-    music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.InBackground)
-    pause(fireRate)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.CoinItem, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
@@ -752,16 +730,40 @@ scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff22222232222222222222
     `)
 asteroidSpeed = 10
-bossHP = 50
+bossHP = 100
 PlayerInit()
 LevelStatusInit()
 music.play(music.stringPlayable("C5 B A G F E D C ", 248), music.PlaybackMode.LoopingInBackground)
 music.setVolume(50)
-game.onUpdateInterval(randint(1000, 1500), function () {
-    SpawnAsteroids()
-})
 game.onUpdateInterval(randint(3000, 5000), function () {
     if (Math.percentChance(50)) {
         SpawnObstacle()
+    }
+})
+game.onUpdateInterval(randint(500, 1500), function () {
+    SpawnAsteroids()
+})
+forever(function () {
+    while (controller.A.isPressed()) {
+        bulletSprite = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 2 2 2 2 . . . . . . 
+            . . . . . 2 3 1 1 3 2 . . . . . 
+            . . . . . 3 1 1 1 1 3 . . . . . 
+            . . . . . 3 1 1 1 1 3 . . . . . 
+            . . . . . 3 1 1 1 1 3 . . . . . 
+            . . . . . 2 1 1 1 1 3 . . . . . 
+            . . . . . 2 1 1 1 1 2 . . . . . 
+            . . . . . 2 3 1 1 3 2 . . . . . 
+            . . . . . . 3 1 1 3 . . . . . . 
+            . . . . . . 2 1 1 2 . . . . . . 
+            . . . . . . 2 1 1 2 . . . . . . 
+            . . . . . . 2 1 1 2 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, playerSprite, 0, -90)
+        music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.InBackground)
+        pause(fireRate)
     }
 })
