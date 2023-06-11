@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const TextUI = SpriteKind.create()
+    export const Item = SpriteKind.create()
 }
 /**
  * Fire Rate Upgrade
@@ -10,12 +11,60 @@ namespace SpriteKind {
  * 
  * Level 3 = 100 (Max)
  */
+function SpawnHealthItem (spawnerSprite: Sprite) {
+    healthItemSprite = sprites.createProjectileFromSide(img`
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        .....222....222.....
+        ....23322..22222....
+        ....23322..22222....
+        ....233222222222....
+        ....222222222222....
+        .....2222222b22.....
+        .......2222b2.......
+        .......2222b2.......
+        ........2222........
+        .........22.........
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        `, 0, 25)
+    healthItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
+    healthItemSprite.setKind(SpriteKind.Item)
+}
 function UpdateDifficulty () {
     if (info.score() % 10 == 0) {
         currentDifficultyLevel += 1
         console.logValue("Difficulty", currentDifficultyLevel)
         console.logValue("Asteroid Speed", asteroidSpeed * currentDifficultyLevel)
     }
+}
+function SpawnUpgradeItem (spawnerSprite: Sprite) {
+    upgradeItemSprite = sprites.createProjectileFromSide(img`
+        . . . . . . . b b . . . . . . . 
+        . . . . . . b d d b . . . . . . 
+        . . . . . b d 5 5 d b . . . . . 
+        . . . . b b 5 5 5 5 b b . . . . 
+        . . . . b 5 5 5 5 5 5 b . . . . 
+        b b b b b 5 5 5 5 1 1 d b b b b 
+        b 5 5 5 5 5 5 5 5 1 1 1 5 5 5 b 
+        b d d 5 5 5 5 5 5 1 1 1 5 d d b 
+        . b d d 5 5 5 5 5 5 5 5 d d b . 
+        . . b b 5 5 5 5 5 5 5 5 b b . . 
+        . . c b 5 5 5 5 5 5 5 5 b c . . 
+        . . c 5 5 5 5 d d 5 5 5 5 c . . 
+        . . c 5 5 d b b b b d 5 5 c . . 
+        . . c 5 d b c c c c b d 5 c . . 
+        . . c c c c . . . . c c c c . . 
+        . . . . . . . . . . . . . . . . 
+        `, 0, 25)
+    upgradeItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
+    upgradeItemSprite.setKind(SpriteKind.Item)
 }
 function SpawnAsteroids () {
     asteroidSprite = sprites.createProjectileFromSide(img`
@@ -41,10 +90,19 @@ function SpawnAsteroids () {
     asteroidSprite.setKind(SpriteKind.Enemy)
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
+    if (Math.percentChance(3)) {
+        if (currentPlayerLevel < 3) {
+            SpawnUpgradeItem(sprite)
+        }
+    } else if (Math.percentChance(30)) {
+        if (info.life() < 3) {
+            SpawnHealthItem(sprite)
+        }
+    }
+    UpdateDifficulty()
     sprites.destroy(sprite, effects.fire, 100)
     sprites.destroy(otherSprite)
     info.changeScoreBy(1)
-    UpdateDifficulty()
 })
 function PlayerInit () {
     playerSprite = sprites.create(assets.image`PlayerSpaceShip`, SpriteKind.Player)
@@ -134,7 +192,9 @@ let levelStatusText: Sprite = null
 let currentPlayerLevel = 0
 let playerSprite: Sprite = null
 let asteroidSprite: Sprite = null
+let upgradeItemSprite: Sprite = null
 let currentDifficultyLevel = 0
+let healthItemSprite: Sprite = null
 let asteroidSpeed = 0
 effects.starField.startScreenEffect()
 let fireRateUpgradeList = [500, 300, 100]
