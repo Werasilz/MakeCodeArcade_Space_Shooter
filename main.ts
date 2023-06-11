@@ -47,7 +47,18 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, oth
     UpdateDifficulty()
 })
 function PlayerInit () {
-    playerSprite = sprites.create(img`
+    playerSprite = sprites.create(assets.image`PlayerSpaceShip`, SpriteKind.Player)
+    controller.moveSprite(playerSprite)
+    playerSprite.setStayInScreen(true)
+    info.setScore(0)
+    info.setLife(3)
+    currentPlayerLevel = 1
+    currentDifficultyLevel = 1
+}
+function TakeDamageAnimation () {
+    animation.runImageAnimation(
+    playerSprite,
+    [img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
@@ -64,13 +75,30 @@ function PlayerInit () {
         . . . f c . . . . . . c f . . . 
         . . . . f . . . . . . f . . . . 
         . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Player)
-    controller.moveSprite(playerSprite)
-    playerSprite.setStayInScreen(true)
-    info.setScore(0)
-    info.setLife(3)
-    currentPlayerLevel = 1
-    currentDifficultyLevel = 1
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
+    100,
+    true
+    )
+    pause(500)
+    animation.stopAnimation(animation.AnimationTypes.All, playerSprite)
+    playerSprite.setImage(assets.image`PlayerSpaceShip`)
 }
 function LevelStatusInit () {
     levelStatusText = sprites.create(img`
@@ -96,6 +124,7 @@ function LevelStatusInit () {
     levelStatusText.y = 130
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    TakeDamageAnimation()
     info.changeLifeBy(-1)
     scene.cameraShake(3, 100)
     sprites.destroy(otherSprite, effects.fire, 100)
