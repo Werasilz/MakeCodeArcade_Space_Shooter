@@ -10,6 +10,13 @@ namespace SpriteKind {
  * 
  * Level 3 = 100 (Max)
  */
+function UpdateDifficulty () {
+    if (info.score() % 10 == 0) {
+        currentDifficultyLevel += 1
+        console.logValue("Difficulty", currentDifficultyLevel)
+        console.logValue("Asteroid Speed", asteroidSpeed * currentDifficultyLevel)
+    }
+}
 function SpawnAsteroids () {
     asteroidSprite = sprites.createProjectileFromSide(img`
         . . . . . c c b b b . . . . . . 
@@ -37,6 +44,7 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, oth
     sprites.destroy(sprite, effects.fire, 100)
     sprites.destroy(otherSprite)
     info.changeScoreBy(1)
+    UpdateDifficulty()
 })
 function PlayerInit () {
     playerSprite = sprites.create(img`
@@ -90,9 +98,9 @@ function LevelStatusInit () {
 let bulletSprite: Sprite = null
 let levelStatusText: Sprite = null
 let currentPlayerLevel = 0
-let currentDifficultyLevel = 0
 let playerSprite: Sprite = null
 let asteroidSprite: Sprite = null
+let currentDifficultyLevel = 0
 let asteroidSpeed = 0
 effects.starField.startScreenEffect()
 let fireRateUpgradeList = [500, 300, 100]
