@@ -4,6 +4,7 @@ namespace SpriteKind {
     export const UpgradeItem = SpriteKind.create()
     export const HealthItem = SpriteKind.create()
     export const CoinItem = SpriteKind.create()
+    export const Effect = SpriteKind.create()
 }
 /**
  * Fire Rate Upgrade
@@ -144,6 +145,104 @@ function SpawnUpgradeItem (spawnerSprite: Sprite) {
     upgradeItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
     upgradeItemSprite.setKind(SpriteKind.UpgradeItem)
 }
+function SpawnMuzzleFlash (spawnerSprite: Sprite) {
+    muzzleFlashSrpite = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Effect)
+    animation.runImageAnimation(
+    muzzleFlashSrpite,
+    [img`
+        . . . . . . 3 3 . . . . . . . . 
+        . . . . . . 3 1 3 . . . . . . . 
+        . . 3 3 . . 3 1 3 . . 3 3 . . . 
+        . . 3 1 3 . 3 1 3 2 3 1 3 . . . 
+        . . . 3 1 3 3 1 3 2 1 3 . . . . 
+        3 3 3 3 2 1 3 1 1 1 3 . . . . . 
+        3 1 1 1 1 1 1 1 1 2 3 3 3 3 3 3 
+        . 3 3 3 2 3 1 1 1 1 1 1 1 1 1 3 
+        . . . . . 2 1 1 1 3 3 2 3 3 3 . 
+        . . . . 3 1 3 1 3 1 2 . . . . . 
+        . . . 3 1 3 2 1 3 3 1 3 . . . . 
+        . . 3 1 3 . 2 1 3 . 3 1 3 . . . 
+        . . 3 3 . . 3 1 3 . . 3 3 . . . 
+        . . . . . . 3 1 3 . . . . . . . 
+        . . . . . . 3 1 3 . . . . . . . 
+        . . . . . . 3 3 . . . . . . . . 
+        `,img`
+        . . 3 3 . . . 3 3 . . . . . . . 
+        . 3 1 1 2 . . 3 1 3 . . 3 3 3 . 
+        . 3 1 1 2 . . 3 1 3 . 3 1 1 3 . 
+        . . 3 2 2 . . 2 1 2 . 2 1 1 3 . 
+        . 3 3 . . . . . 2 2 . 2 2 2 . . 
+        3 1 1 2 2 . . . . . . . 3 3 . . 
+        3 1 1 1 2 . . . . . . 2 1 1 3 3 
+        3 1 1 2 . . . . . . 3 1 1 1 1 3 
+        . 3 2 2 . . . . . . . 2 1 1 3 . 
+        . . . . . . . 2 . . . . 3 3 . . 
+        . . 2 2 2 . 2 1 2 . . 2 2 2 . . 
+        . 3 1 1 2 2 3 1 1 2 . 2 1 1 3 3 
+        3 1 1 1 2 2 1 1 1 2 . 2 1 1 1 3 
+        3 1 1 3 . . 3 1 3 . . . 3 1 1 3 
+        3 3 3 . . . . 3 3 . . . . 3 3 . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . 3 . . . . . 
+        . . . . . 3 . . . . 3 3 . . . . 
+        . . . . 3 3 . . . . . 3 . . . . 
+        . . . . 3 . . . 3 . . . . . . . 
+        . . . . . . . . 3 . . . . . . . 
+        . 3 . . . . . . . . . . 3 . . . 
+        3 3 . . . . . . . . . . 3 3 . . 
+        3 . . . . . . . . . . . . 3 . . 
+        . . . . . . . . . . . . . . . . 
+        . . . 3 . . . 3 . . . . . 3 . . 
+        . . 3 3 . . . 3 . . . . . 3 3 . 
+        . . 3 . . . . 3 . . . . . . 3 . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
+    100,
+    false
+    )
+    muzzleFlashSrpite.setPosition(spawnerSprite.x, spawnerSprite.y)
+    muzzleFlashSrpite.setKind(SpriteKind.Effect)
+    pause(500)
+    sprites.destroy(muzzleFlashSrpite)
+}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.HealthItem, function (sprite, otherSprite) {
     if (info.life() < 3) {
         info.changeLifeBy(1)
@@ -185,6 +284,7 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, oth
     } else if (Math.percentChance(40)) {
         SpawnCoinItem(sprite)
     }
+    SpawnMuzzleFlash(sprite)
     UpdateDifficulty()
     sprites.destroy(sprite, effects.fire, 100)
     sprites.destroy(otherSprite)
@@ -312,6 +412,7 @@ let levelStatusText: Sprite = null
 let currentPlayerLevel = 0
 let playerSprite: Sprite = null
 let asteroidSprite: Sprite = null
+let muzzleFlashSrpite: Sprite = null
 let upgradeItemSprite: Sprite = null
 let coinItemSprite: Sprite = null
 let currentDifficultyLevel = 0
