@@ -33,6 +33,7 @@ function SpawnHealthItem (spawnerSprite: Sprite) {
         `, 0, 25)
     healthItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
     healthItemSprite.setKind(SpriteKind.HealthItem)
+    healthItemSprite.setFlag(SpriteFlag.AutoDestroy, true)
 }
 function UpdateDifficulty () {
     if (info.score() % 10 == 0) {
@@ -51,7 +52,7 @@ function SpawnCoinItem (spawnerSprite: Sprite) {
         c d d 1 1 d d c 
         . f d d d d f . 
         . . f f f f . . 
-        `, 0, 25)
+        `, 0, 10)
     coinItemSprite.setScale(2, ScaleAnchor.Middle)
     coinItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
     coinItemSprite.setKind(SpriteKind.CoinItem)
@@ -135,19 +136,258 @@ function SpawnUpgradeItem (spawnerSprite: Sprite) {
         . . c 5 d b c c c c b d 5 c . . 
         . . c c c c . . . . c c c c . . 
         . . . . . . . . . . . . . . . . 
-        `, 0, 25)
+        `, 0, 10)
     upgradeItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
     upgradeItemSprite.setKind(SpriteKind.UpgradeItem)
     upgradeItemSprite.setFlag(SpriteFlag.AutoDestroy, true)
 }
-function SpawnBoss () {
+function SpawnMuzzleFlash (spawnerSprite: Sprite) {
+    muzzleFlashSrpite = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . 2 1 1 1 1 2 . . . . . 
+        . . . . . . 3 1 1 3 . . . . . . 
+        . . . . . . . 2 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Effect)
+    animation.runImageAnimation(
+    muzzleFlashSrpite,
+    [img`
+        . . . . . . 3 3 . . . . . . . . 
+        . . . . . . 3 1 3 . . . . . . . 
+        . . 3 3 . . 3 1 3 . . 3 3 . . . 
+        . . 3 1 3 . 3 1 3 2 3 1 3 . . . 
+        . . . 3 1 3 3 1 3 2 1 3 . . . . 
+        3 3 3 3 2 1 3 1 1 1 3 . . . . . 
+        3 1 1 1 1 1 1 1 1 2 3 3 3 3 3 3 
+        . 3 3 3 2 3 1 1 1 1 1 1 1 1 1 3 
+        . . . . . 2 1 1 1 3 3 2 3 3 3 . 
+        . . . . 3 1 3 1 3 1 2 . . . . . 
+        . . . 3 1 3 2 1 3 3 1 3 . . . . 
+        . . 3 1 3 . 2 1 3 . 3 1 3 . . . 
+        . . 3 3 . . 3 1 3 . . 3 3 . . . 
+        . . . . . . 3 1 3 . . . . . . . 
+        . . . . . . 3 1 3 . . . . . . . 
+        . . . . . . 3 3 . . . . . . . . 
+        `,img`
+        . . 3 3 . . . 3 3 . . . . . . . 
+        . 3 1 1 2 . . 3 1 3 . . 3 3 3 . 
+        . 3 1 1 2 . . 3 1 3 . 3 1 1 3 . 
+        . . 3 2 2 . . 2 1 2 . 2 1 1 3 . 
+        . 3 3 . . . . . 2 2 . 2 2 2 . . 
+        3 1 1 2 2 . . . . . . . 3 3 . . 
+        3 1 1 1 2 . . . . . . 2 1 1 3 3 
+        3 1 1 2 . . . . . . 3 1 1 1 1 3 
+        . 3 2 2 . . . . . . . 2 1 1 3 . 
+        . . . . . . . 2 . . . . 3 3 . . 
+        . . 2 2 2 . 2 1 2 . . 2 2 2 . . 
+        . 3 1 1 2 2 3 1 1 2 . 2 1 1 3 3 
+        3 1 1 1 2 2 1 1 1 2 . 2 1 1 1 3 
+        3 1 1 3 . . 3 1 3 . . . 3 1 1 3 
+        3 3 3 . . . . 3 3 . . . . 3 3 . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . 3 . . . . . 
+        . . . . . 3 . . . . 3 3 . . . . 
+        . . . . 3 3 . . . . . 3 . . . . 
+        . . . . 3 . . . 3 . . . . . . . 
+        . . . . . . . . 3 . . . . . . . 
+        . 3 . . . . . . . . . . 3 . . . 
+        3 3 . . . . . . . . . . 3 3 . . 
+        3 . . . . . . . . . . . . 3 . . 
+        . . . . . . . . . . . . . . . . 
+        . . . 3 . . . 3 . . . . . 3 . . 
+        . . 3 3 . . . 3 . . . . . 3 3 . 
+        . . 3 . . . . 3 . . . . . . 3 . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
+    100,
+    false
+    )
+    muzzleFlashSrpite.setPosition(spawnerSprite.x, spawnerSprite.y)
+    muzzleFlashSrpite.setKind(SpriteKind.Effect)
+    pause(500)
+    sprites.destroy(muzzleFlashSrpite)
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.HealthItem, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    if (info.life() < maxLife) {
+        info.changeLifeBy(1)
+        music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
+    }
+})
+function SpawnAsteroids () {
+    asteroidSprite = sprites.createProjectileFromSide(img`
+        . . . . . c c b b b . . . . . . 
+        . . . . c b d d d d b . . . . . 
+        . . . . c d d d d d d b b . . . 
+        . . . . c d d d d d d d d b . . 
+        . . . c b b d d d d d d d b . . 
+        . . . c b b d d d d d d d b . . 
+        . c c c c b b b b d d d b b b . 
+        . c d d b c b b b b b b b b d b 
+        c b b d d d b b b b b d d b d b 
+        c c b b d d d d d d d b b b d c 
+        c b c c c b b b b b b b d d c c 
+        c c b b c c c c b d d d b c c b 
+        . c c c c c c c c c c c b b b b 
+        . . c c c c c b b b b b b b c . 
+        . . . . . . c c b b b b c c . . 
+        . . . . . . . . c c c c . . . . 
+        `, 0, 10)
+    asteroidSprite.setPosition(randint(5, 155), 0)
+    asteroidSprite.follow(playerSprite, asteroidSpeed * currentDifficultyLevel)
+    asteroidSprite.setKind(SpriteKind.Enemy)
+    asteroidSprite.setFlag(SpriteFlag.AutoDestroy, true)
+}
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
+    sprites.destroy(sprite)
+    sprites.destroy(otherSprite)
+    info.changeScoreBy(1)
+    music.play(music.melodyPlayable(music.zapped), music.PlaybackMode.InBackground)
+    SpawnMuzzleFlash(sprite)
+    UpdateDifficulty()
+    if (Math.percentChance(5)) {
+        if (currentPlayerLevel < maxPlayerLevel) {
+            SpawnUpgradeItem(sprite)
+        }
+    } else if (Math.percentChance(30)) {
+        if (info.life() < maxLife) {
+            SpawnHealthItem(sprite)
+        }
+    } else if (Math.percentChance(40)) {
+        SpawnCoinItem(sprite)
+    }
+})
+function PlayerInit () {
+    playerSprite = sprites.create(assets.image`PlayerSpaceShip`, SpriteKind.Player)
+    controller.moveSprite(playerSprite)
+    playerSprite.setStayInScreen(true)
+    currentPlayerLevel = 1
+    currentDifficultyLevel = 1
+    fireRate = 500
+    maxPlayerLevel = 5
+    maxLife = 3
+    info.setLife(maxLife)
+    info.setScore(0)
+}
+info.onCountdownEnd(function () {
+    spaceShipObtacle = sprites.createProjectileFromSprite(img`
+        ..............ffffff....
+        ..fc.........fccc2ff....
+        ..f4c.....fffccc2ff.....
+        ..f44ccccc22222222cc....
+        ..f244ccc222224442b9c...
+        ..cf24222222222244999c..
+        .ccf2222222222222199b2c.
+        fc22cc22222222b1111b222c
+        f22ccccccc2222991222222f
+        ffffffc222c22222222222f.
+        ....ff222244c2222222ff..
+        ...cf222244fffffffff....
+        ...c222244ffc2f.........
+        ...c2222cfffccf.........
+        ...ffffffff2cf..........
+        ........fff2c...........
+        `, warningIcon, 150, 0)
+    spaceShipObtacle.setKind(SpriteKind.Enemy)
+    sprites.destroy(warningIcon)
+    spaceShipObtacle.setFlag(SpriteFlag.AutoDestroy, true)
+})
+function TakeDamageAnimation () {
+    music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
+    scene.cameraShake(4, 100)
+    animation.runImageAnimation(
+    playerSprite,
+    [img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 9 9 . . . . . . . 
+        . . . . . . . 9 9 . . . . . . . 
+        . . . . . . 6 9 9 6 . . . . . . 
+        . . . . . 8 6 9 9 6 8 . . . . . 
+        . . . . 8 6 8 6 6 8 6 8 . . . . 
+        . . . . 8 6 8 8 8 8 6 8 . . . . 
+        . . . 8 6 6 8 6 6 8 6 6 8 . . . 
+        . . 6 8 8 8 8 c b 8 8 8 8 6 . . 
+        . 6 8 8 d d b c c b d d 8 8 6 . 
+        . 6 8 d b c f . . f c b d 8 6 . 
+        . . . f c . . . . . . c f . . . 
+        . . . . f . . . . . . f . . . . 
+        . . . . . . . . . . . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
+    100,
+    true
+    )
+    pause(500)
+    animation.stopAnimation(animation.AnimationTypes.All, playerSprite)
+    playerSprite.setImage(assets.image`PlayerSpaceShip`)
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    if (currentPlayerLevel < maxPlayerLevel) {
+        currentPlayerLevel += 1
+        fireRate += -100
+        levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
+        music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
+    }
+})
+info.onScore(150, function () {
     bossSprite = sprites.create(assets.image`Boss`, SpriteKind.Boss)
     bossSprite.setPosition(75, 35)
-    bossSprite.setScale(4, ScaleAnchor.Middle)
+    bossSprite.setScale(3, ScaleAnchor.Middle)
     bossHPStatusBar = statusbars.create(50, 4, StatusBarKind.Health)
     bossHPStatusBar.attachToSprite(bossSprite)
     bossHPStatusBar.value = bossHP
-    bossHPStatusBar.setOffsetPadding(0, -20)
+    bossHPStatusBar.setOffsetPadding(0, -10)
     animation.runImageAnimation(
     bossSprite,
     [img`
@@ -254,248 +494,23 @@ function SpawnBoss () {
     100,
     true
     )
-}
-function SpawnMuzzleFlash (spawnerSprite: Sprite) {
-    muzzleFlashSrpite = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . 2 2 . . . . . . . 
-        . . . . . . 3 1 1 3 . . . . . . 
-        . . . . . 2 1 1 1 1 2 . . . . . 
-        . . . . . 2 1 1 1 1 2 . . . . . 
-        . . . . . . 3 1 1 3 . . . . . . 
-        . . . . . . . 2 2 . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Effect)
-    animation.runImageAnimation(
-    muzzleFlashSrpite,
-    [img`
-        . . . . . . 3 3 . . . . . . . . 
-        . . . . . . 3 1 3 . . . . . . . 
-        . . 3 3 . . 3 1 3 . . 3 3 . . . 
-        . . 3 1 3 . 3 1 3 2 3 1 3 . . . 
-        . . . 3 1 3 3 1 3 2 1 3 . . . . 
-        3 3 3 3 2 1 3 1 1 1 3 . . . . . 
-        3 1 1 1 1 1 1 1 1 2 3 3 3 3 3 3 
-        . 3 3 3 2 3 1 1 1 1 1 1 1 1 1 3 
-        . . . . . 2 1 1 1 3 3 2 3 3 3 . 
-        . . . . 3 1 3 1 3 1 2 . . . . . 
-        . . . 3 1 3 2 1 3 3 1 3 . . . . 
-        . . 3 1 3 . 2 1 3 . 3 1 3 . . . 
-        . . 3 3 . . 3 1 3 . . 3 3 . . . 
-        . . . . . . 3 1 3 . . . . . . . 
-        . . . . . . 3 1 3 . . . . . . . 
-        . . . . . . 3 3 . . . . . . . . 
-        `,img`
-        . . 3 3 . . . 3 3 . . . . . . . 
-        . 3 1 1 2 . . 3 1 3 . . 3 3 3 . 
-        . 3 1 1 2 . . 3 1 3 . 3 1 1 3 . 
-        . . 3 2 2 . . 2 1 2 . 2 1 1 3 . 
-        . 3 3 . . . . . 2 2 . 2 2 2 . . 
-        3 1 1 2 2 . . . . . . . 3 3 . . 
-        3 1 1 1 2 . . . . . . 2 1 1 3 3 
-        3 1 1 2 . . . . . . 3 1 1 1 1 3 
-        . 3 2 2 . . . . . . . 2 1 1 3 . 
-        . . . . . . . 2 . . . . 3 3 . . 
-        . . 2 2 2 . 2 1 2 . . 2 2 2 . . 
-        . 3 1 1 2 2 3 1 1 2 . 2 1 1 3 3 
-        3 1 1 1 2 2 1 1 1 2 . 2 1 1 1 3 
-        3 1 1 3 . . 3 1 3 . . . 3 1 1 3 
-        3 3 3 . . . . 3 3 . . . . 3 3 . 
-        . . . . . . . . . . . . . . . . 
-        `,img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . 3 . . . . . 
-        . . . . . 3 . . . . 3 3 . . . . 
-        . . . . 3 3 . . . . . 3 . . . . 
-        . . . . 3 . . . 3 . . . . . . . 
-        . . . . . . . . 3 . . . . . . . 
-        . 3 . . . . . . . . . . 3 . . . 
-        3 3 . . . . . . . . . . 3 3 . . 
-        3 . . . . . . . . . . . . 3 . . 
-        . . . . . . . . . . . . . . . . 
-        . . . 3 . . . 3 . . . . . 3 . . 
-        . . 3 3 . . . 3 . . . . . 3 3 . 
-        . . 3 . . . . 3 . . . . . . 3 . 
-        `,img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `],
-    100,
-    false
-    )
-    muzzleFlashSrpite.setPosition(spawnerSprite.x, spawnerSprite.y)
-    muzzleFlashSrpite.setKind(SpriteKind.Effect)
-    pause(500)
-    sprites.destroy(muzzleFlashSrpite)
-}
-sprites.onOverlap(SpriteKind.Player, SpriteKind.HealthItem, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite)
-    if (info.life() < 3) {
-        info.changeLifeBy(1)
-        music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
-    }
-})
-function SpawnAsteroids () {
-    asteroidSprite = sprites.createProjectileFromSide(img`
-        . . . . . c c b b b . . . . . . 
-        . . . . c b d d d d b . . . . . 
-        . . . . c d d d d d d b b . . . 
-        . . . . c d d d d d d d d b . . 
-        . . . c b b d d d d d d d b . . 
-        . . . c b b d d d d d d d b . . 
-        . c c c c b b b b d d d b b b . 
-        . c d d b c b b b b b b b b d b 
-        c b b d d d b b b b b d d b d b 
-        c c b b d d d d d d d b b b d c 
-        c b c c c b b b b b b b d d c c 
-        c c b b c c c c b d d d b c c b 
-        . c c c c c c c c c c c b b b b 
-        . . c c c c c b b b b b b b c . 
-        . . . . . . c c b b b b c c . . 
-        . . . . . . . . c c c c . . . . 
-        `, 0, 25)
-    asteroidSprite.setPosition(randint(5, 155), 0)
-    asteroidSprite.follow(playerSprite, asteroidSpeed * currentDifficultyLevel)
-    asteroidSprite.setKind(SpriteKind.Enemy)
-    asteroidSprite.setFlag(SpriteFlag.AutoDestroy, true)
-}
-sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
-    sprites.destroy(sprite)
-    sprites.destroy(otherSprite)
-    info.changeScoreBy(1)
-    music.play(music.melodyPlayable(music.zapped), music.PlaybackMode.InBackground)
-    SpawnMuzzleFlash(sprite)
-    UpdateDifficulty()
-    if (Math.percentChance(5)) {
-        if (currentPlayerLevel < 5) {
-            SpawnUpgradeItem(sprite)
+    while (true) {
+        if (randint(0, 1) == 0) {
+            if (bossSprite.x < 140) {
+                bossSprite.x += 10
+            }
+        } else {
+            if (bossSprite.x > 20) {
+                bossSprite.x += -10
+            }
         }
-    } else if (Math.percentChance(30)) {
-        if (info.life() < 3) {
-            SpawnHealthItem(sprite)
-        }
-    } else if (Math.percentChance(40)) {
-        SpawnCoinItem(sprite)
+        pause(500)
     }
-})
-function PlayerInit () {
-    playerSprite = sprites.create(assets.image`PlayerSpaceShip`, SpriteKind.Player)
-    controller.moveSprite(playerSprite)
-    playerSprite.setStayInScreen(true)
-    info.setScore(0)
-    info.setLife(3)
-    currentPlayerLevel = 1
-    currentDifficultyLevel = 1
-    fireRate = 600
-}
-info.onCountdownEnd(function () {
-    spaceShipObtacle = sprites.createProjectileFromSprite(img`
-        ..............ffffff....
-        ..fc.........fccc2ff....
-        ..f4c.....fffccc2ff.....
-        ..f44ccccc22222222cc....
-        ..f244ccc222224442b9c...
-        ..cf24222222222244999c..
-        .ccf2222222222222199b2c.
-        fc22cc22222222b1111b222c
-        f22ccccccc2222991222222f
-        ffffffc222c22222222222f.
-        ....ff222244c2222222ff..
-        ...cf222244fffffffff....
-        ...c222244ffc2f.........
-        ...c2222cfffccf.........
-        ...ffffffff2cf..........
-        ........fff2c...........
-        `, warningIcon, 150, 0)
-    spaceShipObtacle.setKind(SpriteKind.Enemy)
-    sprites.destroy(warningIcon)
-    spaceShipObtacle.setFlag(SpriteFlag.AutoDestroy, true)
-})
-function TakeDamageAnimation () {
-    animation.runImageAnimation(
-    playerSprite,
-    [img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . 9 9 . . . . . . . 
-        . . . . . . . 9 9 . . . . . . . 
-        . . . . . . 6 9 9 6 . . . . . . 
-        . . . . . 8 6 9 9 6 8 . . . . . 
-        . . . . 8 6 8 6 6 8 6 8 . . . . 
-        . . . . 8 6 8 8 8 8 6 8 . . . . 
-        . . . 8 6 6 8 6 6 8 6 6 8 . . . 
-        . . 6 8 8 8 8 c b 8 8 8 8 6 . . 
-        . 6 8 8 d d b c c b d d 8 8 6 . 
-        . 6 8 d b c f . . f c b d 8 6 . 
-        . . . f c . . . . . . c f . . . 
-        . . . . f . . . . . . f . . . . 
-        . . . . . . . . . . . . . . . . 
-        `,img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `],
-    100,
-    true
-    )
-    pause(500)
-    animation.stopAnimation(animation.AnimationTypes.All, playerSprite)
-    playerSprite.setImage(assets.image`PlayerSpaceShip`)
-}
-sprites.onOverlap(SpriteKind.Player, SpriteKind.UpgradeItem, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite)
-    if (currentPlayerLevel < 5) {
-        currentPlayerLevel += 1
-        fireRate += -100
-        levelStatusText.sayText("LEVEL:" + currentPlayerLevel)
-        music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
-    }
-})
-info.onScore(150, function () {
-    SpawnBoss()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.CoinItem, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
     info.changeScoreBy(10)
+    UpdateDifficulty()
     music.play(music.melodyPlayable(music.baDing), music.PlaybackMode.InBackground)
 })
 function LevelStatusInit () {
@@ -522,23 +537,15 @@ function LevelStatusInit () {
 }
 sprites.onOverlap(SpriteKind.Boss, SpriteKind.Projectile, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
+    info.changeScoreBy(1)
     bossHP += -1
     bossHPStatusBar.value = bossHP
     music.play(music.melodyPlayable(music.zapped), music.PlaybackMode.InBackground)
-    SpawnMuzzleFlash(sprite)
-    if (Math.percentChance(5)) {
-        if (currentPlayerLevel < 5) {
-            SpawnUpgradeItem(sprite)
-        }
-    } else if (Math.percentChance(5)) {
-        if (info.life() < 3) {
-            SpawnHealthItem(sprite)
-        }
-    } else if (Math.percentChance(5)) {
-        SpawnCoinItem(sprite)
-    }
+    UpdateDifficulty()
     if (bossHP <= 0) {
         sprites.destroy(bossSprite)
+        pause(1000)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
         game.gameOver(true)
     }
 })
@@ -589,22 +596,22 @@ function SpawnObstacle () {
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
-    scene.cameraShake(3, 100)
     info.changeLifeBy(-1)
-    music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
     TakeDamageAnimation()
 })
 let bulletSprite: Sprite = null
+let bossHPStatusBar: StatusBarSprite = null
+let bossSprite: Sprite = null
 let levelStatusText: Sprite = null
 let warningIcon: Sprite = null
 let spaceShipObtacle: Sprite = null
 let fireRate = 0
+let maxPlayerLevel = 0
 let currentPlayerLevel = 0
 let playerSprite: Sprite = null
 let asteroidSprite: Sprite = null
+let maxLife = 0
 let muzzleFlashSrpite: Sprite = null
-let bossHPStatusBar: StatusBarSprite = null
-let bossSprite: Sprite = null
 let upgradeItemSprite: Sprite = null
 let coinItemSprite: Sprite = null
 let currentDifficultyLevel = 0
@@ -733,7 +740,7 @@ scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff22224323244242222222
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff22222232222222222222
     `)
-asteroidSpeed = 10
+asteroidSpeed = 5
 bossHP = 100
 PlayerInit()
 LevelStatusInit()
@@ -748,7 +755,7 @@ game.onUpdateInterval(randint(500, 1500), function () {
     SpawnAsteroids()
 })
 forever(function () {
-    while (controller.A.isPressed()) {
+    if (controller.A.isPressed()) {
         bulletSprite = sprites.createProjectileFromSprite(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
