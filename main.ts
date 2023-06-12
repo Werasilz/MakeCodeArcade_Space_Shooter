@@ -115,6 +115,7 @@ function SpawnCoinItem (spawnerSprite: Sprite) {
     100,
     true
     )
+    coinItemSprite.setFlag(SpriteFlag.AutoDestroy, true)
 }
 function SpawnUpgradeItem (spawnerSprite: Sprite) {
     upgradeItemSprite = sprites.createProjectileFromSide(img`
@@ -137,6 +138,7 @@ function SpawnUpgradeItem (spawnerSprite: Sprite) {
         `, 0, 25)
     upgradeItemSprite.setPosition(spawnerSprite.x, spawnerSprite.y)
     upgradeItemSprite.setKind(SpriteKind.UpgradeItem)
+    upgradeItemSprite.setFlag(SpriteFlag.AutoDestroy, true)
 }
 function SpawnBoss () {
     bossSprite = sprites.create(assets.image`Boss`, SpriteKind.Boss)
@@ -380,6 +382,7 @@ function SpawnAsteroids () {
     asteroidSprite.setPosition(randint(5, 155), 0)
     asteroidSprite.follow(playerSprite, asteroidSpeed * currentDifficultyLevel)
     asteroidSprite.setKind(SpriteKind.Enemy)
+    asteroidSprite.setFlag(SpriteFlag.AutoDestroy, true)
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
     sprites.destroy(sprite)
@@ -408,7 +411,7 @@ function PlayerInit () {
     info.setLife(3)
     currentPlayerLevel = 1
     currentDifficultyLevel = 1
-    fireRate = 500
+    fireRate = 600
 }
 info.onCountdownEnd(function () {
     spaceShipObtacle = sprites.createProjectileFromSprite(img`
@@ -431,6 +434,7 @@ info.onCountdownEnd(function () {
         `, warningIcon, 150, 0)
     spaceShipObtacle.setKind(SpriteKind.Enemy)
     sprites.destroy(warningIcon)
+    spaceShipObtacle.setFlag(SpriteFlag.AutoDestroy, true)
 })
 function TakeDamageAnimation () {
     animation.runImageAnimation(
@@ -765,5 +769,6 @@ forever(function () {
             `, playerSprite, 0, -90)
         music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.InBackground)
         pause(fireRate)
+        bulletSprite.setFlag(SpriteFlag.AutoDestroy, true)
     }
 })
